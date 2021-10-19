@@ -49,7 +49,7 @@ export class HomePage implements OnInit {
   }
 
   loadLocalTokensBurned() {
-    const stringValue = localStorage.getItem('egc_tokensBurned');
+    const stringValue = localStorage.getItem('erabbit_tokensBurned');
     const value = parseFloat(stringValue);
 
     if (!isNaN(value)) {
@@ -58,7 +58,7 @@ export class HomePage implements OnInit {
   }
 
   loadLocalDailyVolume() {
-    const stringValue = localStorage.getItem('egc_dailyVolume');
+    const stringValue = localStorage.getItem('erabbit_dailyVolume');
     const value = parseFloat(stringValue);
 
     if (!isNaN(value)) {
@@ -67,7 +67,7 @@ export class HomePage implements OnInit {
   }
 
   loadLocalTokensHeld() {
-    const stringValue = localStorage.getItem('egc_tokensHeld');
+    const stringValue = localStorage.getItem('erabbit_tokensHeld');
     const value = parseFloat(stringValue);
 
     if (!isNaN(value)) {
@@ -77,7 +77,7 @@ export class HomePage implements OnInit {
 
   saveLocalDailyVolume() {
     localStorage.setItem(
-      'egc_dailyVolume',
+      'erabbit_dailyVolume',
       this.erabbitData.dailyVolume.toString()
     );
   }
@@ -113,7 +113,7 @@ export class HomePage implements OnInit {
 
       // save to local storage
       localStorage.setItem(
-        'egc_tokensBurned',
+        'erabbit_tokensBurned',
         this.erabbitData.burnedTokens.toString()
       );
     }
@@ -142,7 +142,7 @@ export class HomePage implements OnInit {
 
       // save to local storage
       localStorage.setItem(
-        'egc_tokensHeld',
+        'erabbit_tokensHeld',
         this.erabbitData.tokenHeld.toString()
       );
     }
