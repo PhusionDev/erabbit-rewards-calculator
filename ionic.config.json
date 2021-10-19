@@ -1,0 +1,7 @@
+{
+  "name": "erabbit-rewards-calculator",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
