@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-
+import { interval } from 'rxjs';
 import { ERabbitData } from './erabbit.model';
 import { CoinDataService } from '../services/coindata.service';
-import { ITokenData } from '../models/tokendata';
+import { CoinGeckoResponse } from '../models/cgresponse';
+import { BscResponse } from '../models/bscresponse';
+import { PancakeSwapResponse } from '../models/pcsresponse';
 
 @Component({
   selector: 'app-home',
@@ -12,40 +14,85 @@ import { ITokenData } from '../models/tokendata';
 export class HomePage implements OnInit {
   erabbitData: ERabbitData = {
     totalSupply: 1000000000,
-    burnedTokens: 480000000,
-    circulatingSupply: 0,
+    burnedTokens: 0,
+    circulatingSupply: 1000000000,
     rewardPercent: 0.03,
-    dailyVolume: 1000000,
-    tokenHeld: 100000,
+    dailyVolume: 0,
+    tokensHeld: 100000,
     tokenPrice: 0.00183317,
   };
-  tokenData: ITokenData;
-
+  cgTokenResult: CoinGeckoResponse;
+  pcsTokenResult: PancakeSwapResponse;
+  bscBurnedResult: BscResponse;
+  bscWalletTokensHeld: BscResponse;
+  walletAddress: string;
   public rewards = 0;
 
-  constructor(private coinDataService: CoinDataService) {
-    this.updateCirculatingSupply();
-    this.calculateRewards();
-  }
+  constructor(private coinDataService: CoinDataService) {}
 
   ngOnInit() {
     this.loadLocalStorage();
-    this.calculateRewards();
+    this.getBscBurnData();
+    this.getPancakeTokenPrice();
     //this.getTokenData();
   }
 
-  getTokenData() {
+  getWalletAddressTokensHeld() {
+    if (this.walletAddress !== '') {
+      this.coinDataService
+        .getBscWalletTokensHeld(this.walletAddress)
+        .subscribe((data) => {
+          this.bscWalletTokensHeld = data;
+          const value = parseFloat(data.result);
+          if (!isNaN(value)) {
+            const decValue = value * 0.000000001;
+            this.erabbitData.tokensHeld = decValue;
+            this.saveLocalTokensHeld();
+            this.calculateRewards();
+          }
+          //console.log(data);
+        });
+    }
+  }
+
+  getBscBurnData() {
+    this.coinDataService.getBscBurnData().subscribe((data) => {
+      this.bscBurnedResult = data;
+      const value = parseFloat(data.result);
+      if (!isNaN(value)) {
+        const decValue = value * 0.000000001;
+        this.erabbitData.burnedTokens = decValue;
+        this.saveLocalTokensBurned();
+        this.updateCirculatingSupply();
+        this.calculateRewards();
+      }
+    });
+  }
+
+  getPancakeTokenPrice() {
+    this.coinDataService.getPancakeTokenData().subscribe((data) => {
+      this.pcsTokenResult = data;
+      const value = parseFloat(data.price);
+      if (!isNaN(value)) {
+        this.erabbitData.tokenPrice = value;
+        this.saveLocalTokenPrice();
+        this.calculateRewards();
+      }
+    });
+  }
+
+  getCoinGeckoTokenData() {
     this.coinDataService.getCoinGeckoTokenData().subscribe((data) => {
-      this.tokenData = data;
-      this.erabbitData.dailyVolume = this.tokenData.totalVolume;
+      this.cgTokenResult = data;
+      this.erabbitData.dailyVolume = this.cgTokenResult.totalVolume;
       this.saveLocalDailyVolume();
-      //console.log(data);
     });
   }
 
   loadLocalStorage() {
     this.loadLocalTokensBurned();
     this.loadLocalDailyVolume();
+    this.loadLocalWalletAddress();
     this.loadLocalTokensHeld();
   }
 
@@ -67,12 +114,25 @@ export class HomePage implements OnInit {
     }
   }
 
+  loadLocalTokenPrice() {
+    const stringValue = localStorage.getItem('erabbit_tokensPrice');
+    const value = parseFloat(stringValue);
+
+    if (!isNaN(value)) {
+      this.erabbitData.tokenPrice = value;
+    }
+  }
+
+  loadLocalWalletAddress() {
+    this.walletAddress = localStorage.getItem('erabbit_walletAddress');
+  }
+
   loadLocalTokensHeld() {
     const stringValue = localStorage.getItem('erabbit_tokensHeld');
     const value = parseFloat(stringValue);
 
     if (!isNaN(value)) {
-      this.erabbitData.tokenHeld = value;
+      this.erabbitData.tokensHeld = value;
     }
   }
 
@@ -80,6 +140,31 @@ export class HomePage implements OnInit {
     localStorage.setItem(
       'erabbit_dailyVolume',
       this.erabbitData.dailyVolume.toString()
+    );
+  }
+
+  saveLocalTokensBurned() {
+    localStorage.setItem(
+      'erabbit_tokensBurned',
+      this.erabbitData.burnedTokens.toString()
+    );
+  }
+
+  saveLocalTokenPrice() {
+    localStorage.setItem(
+      'erabbit_tokenPrice',
+      this.erabbitData.tokenPrice.toString()
+    );
+  }
+
+  saveLocalWalletAddress() {
+    localStorage.setItem('erabbit_walletAddress', this.walletAddress);
+  }
+
+  saveLocalTokensHeld() {
+    localStorage.setItem(
+      'erabbit_tokensHeld',
+      this.erabbitData.tokensHeld.toString()
     );
   }
 
@@ -103,7 +188,7 @@ export class HomePage implements OnInit {
   }
 
   effectivePercentage() {
-    return this.erabbitData.tokenHeld / this.erabbitData.circulatingSupply;
+    return this.erabbitData.tokensHeld / this.erabbitData.circulatingSupply;
   }
 
   // onChange Methods
@@ -113,14 +198,9 @@ export class HomePage implements OnInit {
 
     if (!isNaN(parsedValue)) {
       this.erabbitData.burnedTokens = parsedValue;
+      this.saveLocalTokensBurned();
       this.updateCirculatingSupply();
       this.calculateRewards();
-
-      // save to local storage
-      localStorage.setItem(
-        'erabbit_tokensBurned',
-        this.erabbitData.burnedTokens.toString()
-      );
     }
   }
 
@@ -130,26 +210,19 @@ export class HomePage implements OnInit {
 
     if (!isNaN(parsedValue)) {
       this.erabbitData.dailyVolume = parsedValue;
-      this.calculateRewards();
-
-      // save to local storage
       this.saveLocalDailyVolume();
+      this.calculateRewards();
     }
   }
 
-  onChangeEgcHeld(event: Event) {
+  onChangeTokensHeld(event: Event) {
     const value = (event.target as HTMLInputElement).value;
     const parsedValue = parseFloat(value);
 
     if (!isNaN(parsedValue)) {
-      this.erabbitData.tokenHeld = parsedValue;
+      this.erabbitData.tokensHeld = parsedValue;
+      this.saveLocalTokensHeld();
       this.calculateRewards();
-
-      // save to local storage
-      localStorage.setItem(
-        'erabbit_tokensHeld',
-        this.erabbitData.tokenHeld.toString()
-      );
     }
   }
 
@@ -159,13 +232,15 @@ export class HomePage implements OnInit {
 
     if (!isNaN(parsedValue)) {
       this.erabbitData.tokenPrice = parsedValue;
+      this.saveLocalTokenPrice();
       this.calculateRewards();
-
-      // save to local storage
-      localStorage.setItem(
-        'fc_cakePrice',
-        this.erabbitData.tokenPrice.toString()
-      );
     }
+  }
+
+  onChangeWalletAddress(event: Event) {
+    const value = (event.target as HTMLInputElement).value;
+
+    this.walletAddress = value;
+    this.saveLocalWalletAddress();
   }
 }

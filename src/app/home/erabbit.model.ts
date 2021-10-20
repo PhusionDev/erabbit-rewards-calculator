@@ -4,6 +4,6 @@ export interface ERabbitData {
   circulatingSupply: number;
   rewardPercent: number;
   dailyVolume: number;
-  tokenHeld: number;
+  tokensHeld: number;
   tokenPrice: number;
 }

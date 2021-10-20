@@ -28,6 +28,9 @@
               color="primary"
               autocomplete="off"
             ></ion-input>
+            <ion-button icon-only (click)="getBscBurnData()">
+              <ion-icon name="refresh-outline"></ion-icon>
+            </ion-button>
           </ion-item>
 
           <ion-item>
@@ -70,6 +73,9 @@
               color="primary"
               autocomplete="off"
             ></ion-input>
+            <ion-button icon-only (click)="getPancakeTokenPrice()">
+              <ion-icon name="refresh-outline"></ion-icon>
+            </ion-button>
           </ion-item>
         </ion-card>
 
@@ -80,14 +86,31 @@
           </ion-card-header>
 
           <ion-item>
-            <ion-label>ERABBIT Held</ion-label>
+            <ion-label>Wallet Address</ion-label>
             <ion-input
-              [value]="erabbitData.tokenHeld"
+              [value]="walletAddress"
               class="ion-text-center"
-              (input)="onChangeEgcHeld($event)"
+              (input)="onChangeWalletAddress($event)"
               color="primary"
               autocomplete="off"
             ></ion-input>
+            <ion-button icon-only (click)="getWalletAddressTokensHeld()">
+              <ion-icon name="refresh-outline"></ion-icon>
+            </ion-button>
+          </ion-item>
+
+          <ion-item>
+            <ion-label>ERABBIT Held</ion-label>
+            <ion-input
+              [value]="erabbitData.tokensHeld"
+              class="ion-text-center"
+              (input)="onChangeTokensHeld($event)"
+              color="primary"
+              autocomplete="off"
+            ></ion-input>
+            <ion-button icon-only (click)="getWalletAddressTokensHeld()">
+              <ion-icon name="refresh-outline"></ion-icon>
+            </ion-button>
           </ion-item>
 
           <ion-item>
@@ -97,13 +120,128 @@
 
           <ion-item>
             <ion-label>Daily Rewards (in $)</ion-label>
-            <ion-label>{{rewards | currency:'USD':true:'1.2-4'}}</ion-label>
+            <ion-label>{{rewards | currency:'USD':"symbol":'1.2-4'}}</ion-label>
           </ion-item>
 
           <ion-item>
             <ion-label>Daily Rewards (in $ERABBIT)</ion-label>
             <ion-label>{{tokenRewards() | number:"1.2-12"}}</ion-label>
           </ion-item>
+        </ion-card>
+
+        <br />
+
+        <ion-card>
+          <ion-card-header>
+            <ion-card-title>About</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            Live data will load once when the application starts. Please give it
+            a moment to fetch the data. When you click a refresh button it will
+            take a moment to get data from API. Please do not spam the refresh
+            button.
+          </ion-card-content>
+          <ion-card-content>
+            All values that you input will be saved in your browser's local
+            storage for the next time you use this application.
+          </ion-card-content>
+          <ion-card-content>
+            Made with love by Jared Hodgkins. Find me on the official ERABBIT
+            Telegram if you notice any issues!
+          </ion-card-content>
+        </ion-card>
+
+        <br />
+
+        <ion-card>
+          <ion-card-header>
+            <ion-card-title>ERABBIT Official Links & Info</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            ERABBIT Website:
+            <a
+              href="https://elonsrabbit.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              >https://elonsrabbit.com</a
+            >
+            <br />
+            <!-- ERABBIT Rewards Dashboard:
+            <a
+              href="https://"
+              target="_blank"
+              rel="noopener noreferrer"
+              >https://</a
+            >
+            <br /> -->
+            ERABBIT Official Telegram:
+            <a
+              href="https://t.me/elonsrabbit"
+              target="_blank"
+              rel="noopener noreferrer"
+              >https://t.me/elonsrabbit</a
+            >
+            <br />
+            <!-- ERABBIT Official Discord:
+            <a
+              href="https://discord.gg/P3DAFUzyYy"
+              target="_blank"
+              rel="noopener noreferrer"
+              >https://discord.gg/P3DAFUzyYy</a
+            >
+            <br /> -->
+            ERABBIT Official Twitter:
+            <a
+              href="https://twitter.com/ElonsRabbit"
+              target="_blank"
+              rel="noopener noreferrer"
+              >https://twitter.com/ElonsRabbit</a
+            >
+            <br />
+            <!-- ERABBIT Official Facebook:
+            <a
+              href="https://www.facebook.com/evergrowcoin"
+              target="_blank"
+              rel="noopener noreferrer"
+              >https://www.facebook.com/evergrowcoin</a
+            >
+            <br /> -->
+            <!-- ERABBIT Official Reddit:
+            <a
+              href="https://www.reddit.com/r/evergrowcoin"
+              target="_blank"
+              rel="noopener noreferrer"
+              >https://www.reddit.com/r/evergrowcoin</a
+            > -->
+          </ion-card-content>
+
+          <ion-card-content>
+            Buy on Pancake Swap:
+            <a
+              href="https://pancakeswap.finance/swap?outputCurrency=0x92a4ebee814afe58741d7f216dc10211d5abc250"
+              target="_blank"
+              rel="noopener noreferrer"
+              ><img src="assets/pancake.png"
+            /></a>
+            <br />
+            Buy on Poocoin:
+            <a
+              href="https://poocoin.app/swap?outputCurrency=0x92a4ebee814afe58741d7f216dc10211d5abc250"
+              target="_blank"
+              rel="noopener noreferrer"
+              ><img src="assets/poocoin.png"
+            /></a>
+          </ion-card-content>
+
+          <ion-card-content>
+            ERABBIT Contract: 0x92a4ebee814afe58741d7f216dc10211d5abc250
+            <a
+              href="https://bscscan.com/token/0x92a4ebee814afe58741d7f216dc10211d5abc250"
+              target="_blank"
+              rel="noopener noreferrer"
+              ><img src="assets/bscscan_logo.png"
+            /></a>
+          </ion-card-content>
         </ion-card>
       </ion-col>
     </ion-row>
