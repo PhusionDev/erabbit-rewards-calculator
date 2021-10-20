@@ -17,6 +17,7 @@ export class HomePage implements OnInit {
     rewardPercent: 0.03,
     dailyVolume: 1000000,
     tokenHeld: 100000,
+    tokenPrice: 0.00183317,
   };
   tokenData: ITokenData;
 
@@ -93,6 +94,10 @@ export class HomePage implements OnInit {
     this.rewards = effectivePercentage * totalDistribution;
   }
 
+  tokenRewards() {
+    return this.rewards / this.erabbitData.tokenPrice;
+  }
+
   totalDistribution() {
     return this.erabbitData.dailyVolume * this.erabbitData.rewardPercent;
   }
@@ -144,6 +149,22 @@ export class HomePage implements OnInit {
       localStorage.setItem(
         'erabbit_tokensHeld',
         this.erabbitData.tokenHeld.toString()
+      );
+    }
+  }
+
+  onChangeTokenPrice(event: Event) {
+    const value = (event.target as HTMLInputElement).value;
+    const parsedValue = parseFloat(value);
+
+    if (!isNaN(parsedValue)) {
+      this.erabbitData.tokenPrice = parsedValue;
+      this.calculateRewards();
+
+      // save to local storage
+      localStorage.setItem(
+        'fc_cakePrice',
+        this.erabbitData.tokenPrice.toString()
       );
     }
   }
