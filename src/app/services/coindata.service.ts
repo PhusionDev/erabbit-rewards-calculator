@@ -6,7 +6,7 @@ import { CoinGeckoResponse } from '../models/cgresponse';
 import { BscResponse } from '../models/bscresponse';
 import { PancakeSwapResponse } from '../models/pcsresponse';
 
-import { environment } from 'src/environments/environment';
+import { environment } from '../../environments/environment';
 @Injectable()
 export class CoinDataService {
   private apiKey = environment.bscApiKey;
