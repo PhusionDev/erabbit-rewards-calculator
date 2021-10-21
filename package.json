@@ -7,8 +7,7 @@
     "ng": "ng",
     "config": "node set-env.js",
     "start": "ng serve",
-    "vercel-build": "node ./set-env.js",
-    "build": "ng build",
+    "build": "node config && ng build",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"
