@@ -34,7 +34,7 @@ export class HomePage implements OnInit {
     this.loadLocalStorage();
     this.getBscBurnData();
     this.getPancakeTokenPrice();
-    //this.getTokenData();
+    this.getCoinGeckoTokenData();
   }
 
   getWalletAddressTokensHeld() {

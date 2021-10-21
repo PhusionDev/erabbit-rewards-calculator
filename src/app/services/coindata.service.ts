@@ -49,12 +49,12 @@ export class CoinDataService {
 
   getCoinGeckoTokenData(): Observable<CoinGeckoResponse> {
     const currency = 'usd';
-    const tokenApiId = 'erabbit';
+    const tokenApiId = 'elons-rabbit';
     const url = `${this.cgApiUrl}/coins/markets?vs_currency=${currency}&ids=${tokenApiId}`;
-
+    //console.log(url);
     return this.http.get(url).pipe(
       map(
-        (data) =>
+        (data: any) =>
           ({
             currentPrice: data[0].current_price,
             totalVolume: data[0].total_volume,
