@@ -3,6 +3,7 @@
 
 *~
 *.sw[mnpcod]
+.env
 .tmp
 *.tmp
 *.tmp.*
@@ -30,4 +31,4 @@ npm-debug.log*
 /plugins
 /www
 
-/src/app/API.ts
+src/environments/*

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { interval } from 'rxjs';
+
 import { ERabbitData } from './erabbit.model';
 import { CoinDataService } from '../services/coindata.service';
 import { CoinGeckoResponse } from '../models/cgresponse';

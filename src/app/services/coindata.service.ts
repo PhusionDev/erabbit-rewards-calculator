@@ -5,11 +5,11 @@ import { map } from 'rxjs/operators';
 import { CoinGeckoResponse } from '../models/cgresponse';
 import { BscResponse } from '../models/bscresponse';
 import { PancakeSwapResponse } from '../models/pcsresponse';
-import { ApiKeys } from '../API';
 
+import { environment } from 'src/environments/environment';
 @Injectable()
 export class CoinDataService {
-  private apiKey = ApiKeys.bsc;
+  private apiKey = environment.bscApiKey;
   private burnAddress = '0x000000000000000000000000000000000000dead';
   private contractAddress = '0x92a4ebee814afe58741d7f216dc10211d5abc250';
   private bscApiUrl = 'https://api.bscscan.com/api';
