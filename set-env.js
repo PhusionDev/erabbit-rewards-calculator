@@ -1,4 +1,5 @@
 const fs = require("fs");
+const path = require("path");
 // import { writeFile } from 'fs'; if you are using a typescript file
 
 const environmentFile = `export const environment = {
@@ -10,7 +11,7 @@ const environmentFile = `export const environment = {
 //path.resolve(process.cwd(), /# etc. #/)
 // Generate environment.ts file
 fs.writeFile(
-  "./src/environments/environment.ts",
+  path.resolve(process.cwd(), "./src/environments/environment.ts"),
   environmentFile,
   function (err) {
     if (err) {
