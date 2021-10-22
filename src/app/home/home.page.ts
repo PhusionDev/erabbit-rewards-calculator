@@ -32,6 +32,7 @@ export class HomePage implements OnInit {
 
   ngOnInit() {
     this.loadLocalStorage();
+    this.calculateRewards();
     this.getBscBurnData();
     this.getPancakeTokenPrice();
     this.getCoinGeckoTokenData();
@@ -50,7 +51,6 @@ export class HomePage implements OnInit {
             this.saveLocalTokensHeld();
             this.calculateRewards();
           }
-          //console.log(data);
         });
     }
   }
@@ -86,6 +86,7 @@ export class HomePage implements OnInit {
       this.cgTokenResult = data;
       this.erabbitData.dailyVolume = this.cgTokenResult.totalVolume;
       this.saveLocalDailyVolume();
+      this.calculateRewards();
     });
   }
 

@@ -6,6 +6,9 @@
   "scripts": {
     "ng": "ng",
     "config": "node set-env.js",
+    "clear-env": "node clear-env.js",
+    "push": "git push -u origin master",
+    "deploy": "npm run clear-env && npm run push",
     "start": "ng serve",
     "build": "npm run config && ng build",
     "test": "ng test",
